@@ -100,6 +100,32 @@ This project is built with a modern, scalable, and AI-first technology stack, ch
 | **AI/ML**     | [Google Gemini API](https://ai.google.dev/gemini-api)                                                        | The core of our intelligent features. We use a suite of Gemini models for multimodal input/output |
 | **State**     | React Context API                                                                                            | For centralized and simplified global state management (`AppContext.tsx`) |
 
+## 🚀 Getting Started
+
+To run this project locally, you only need to run the frontend, as the backend is handled by Firebase (serverless).
+
+### Prerequisites
+- Node.js (Latest LTS version recommended)
+- npm (comes with Node.js)
+
+### Installation & Running
+
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Open the app**:
+   Click the link in your terminal (usually [http://localhost:3000](http://localhost:3000)) to view the website.
+
+### Configuration
+The project uses Firebase. The configuration is already set in `src/firebaseConfig.ts`. No extra backend setup is required for local development.
+
 ## 🚀 Future Roadmap
 
 We are just getting started! Our roadmap includes integrating more advanced technologies to further empower our users:
