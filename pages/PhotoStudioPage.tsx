@@ -7,14 +7,14 @@ import { useLocalization } from '../hooks/useLocalization';
 
 const PhotoStudioPage: React.FC = () => {
     const { t } = useLocalization();
-    const [originalImage, setOriginalImage] = useState<{b64: string; mime: string} | null>(null);
+    const [originalImage, setOriginalImage] = useState<{ b64: string; mime: string } | null>(null);
     const [prompt, setPrompt] = useState('');
     const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
     const [resultParts, setResultParts] = useState<Part[] | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-     const themes = useMemo(() => [
+    const themes = useMemo(() => [
         {
             id: 'clean',
             name: t('photoStudio.themes.clean.name'),
@@ -76,6 +76,8 @@ const PhotoStudioPage: React.FC = () => {
         } catch (e: any) {
             if (e.message === "QUOTA_EXCEEDED") {
                 setError(t('common.error.quota'));
+            } else if (e.message === "BILLING_REQUIRED") {
+                setError("Image generation requires a billed Google Cloud account. Please upgrade your plan.");
             } else {
                 setError(e.message || t('photoStudio.error.unknown'));
             }
@@ -83,7 +85,7 @@ const PhotoStudioPage: React.FC = () => {
             setIsLoading(false);
         }
     }, [originalImage, prompt, selectedTheme, t, themes]);
-    
+
     const editedImagePart = resultParts?.find(part => part.inlineData);
     const textPart = resultParts?.find(part => part.text);
 
@@ -93,7 +95,7 @@ const PhotoStudioPage: React.FC = () => {
                 <h2 className="text-4xl font-bold text-slate-800 dark:text-slate-100">{t('photoStudio.main.title')}</h2>
                 <p className="text-slate-500 dark:text-slate-400 mt-1">{t('photoStudio.main.description')}</p>
             </div>
-            
+
             <Card>
                 <CardContent className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Controls */}
@@ -109,15 +111,15 @@ const PhotoStudioPage: React.FC = () => {
                                         <p className="mt-2">{t('photoStudio.controls.clickToUpload')}</p>
                                     </div>
                                 )}
-                                <input type="file" className="absolute w-full h-full opacity-0 cursor-pointer" onChange={handleImageUpload} accept="image/*"/>
+                                <input type="file" className="absolute w-full h-full opacity-0 cursor-pointer" onChange={handleImageUpload} accept="image/*" />
                             </div>
                         </div>
                         <div>
                             <label className="font-semibold text-slate-700 dark:text-slate-200 block mb-2">{t('photoStudio.controls.themeLabel')}</label>
-                             <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-4">
                                 {themes.map(theme => (
-                                    <button 
-                                        key={theme.id} 
+                                    <button
+                                        key={theme.id}
                                         onClick={() => setSelectedTheme(theme.id === selectedTheme ? null : theme.id)}
                                         className={`p-4 rounded-xl border-2 transition-all duration-300 text-center ${selectedTheme === theme.id ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20 shadow-lg' : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 hover:border-teal-400 hover:bg-slate-50 dark:hover:bg-slate-600'}`}
                                     >
@@ -142,9 +144,9 @@ const PhotoStudioPage: React.FC = () => {
                             />
                         </div>
                         <Button onClick={handleGenerate} isLoading={isLoading} disabled={!originalImage || (!prompt && !selectedTheme)}>
-                            {isLoading 
+                            {isLoading
                                 ? t('photoStudio.controls.generatingButton')
-                                : t('photoStudio.controls.enhanceButton')}
+                                : t('photoStudio.controls.enhanceButton') || "Analyze Image"}
                         </Button>
                     </div>
 
@@ -162,15 +164,15 @@ const PhotoStudioPage: React.FC = () => {
                                 </div>
                             )}
                             {error && !isLoading && <p className="text-red-500 p-4 text-center">{error}</p>}
-                            
+
                             {editedImagePart && (
-                                <img 
-                                    src={`data:${editedImagePart.inlineData?.mimeType};base64,${editedImagePart.inlineData?.data}`} 
-                                    alt="Edited result" 
-                                    className="h-full w-full object-contain p-2 rounded-lg" 
+                                <img
+                                    src={`data:${editedImagePart.inlineData?.mimeType};base64,${editedImagePart.inlineData?.data}`}
+                                    alt="Edited result"
+                                    className="h-full w-full object-contain p-2 rounded-lg"
                                 />
                             )}
-                            
+
                             {textPart && (
                                 <div className="absolute bottom-0 left-0 right-0 p-3 bg-black/60 backdrop-blur-sm text-white text-xs text-center">
                                     {textPart.text}

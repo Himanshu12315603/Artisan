@@ -1,7 +1,7 @@
 import { GoogleGenAI, Type, GenerateContentResponse, Modality, Part, Operation, GenerateVideosResponse } from "@google/genai";
 
 export const generateText = async (prompt: string): Promise<string> => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY!.trim() });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -38,7 +38,7 @@ export const generateProductDetailsFromInput = async (
     mimeType?: string,
     textInput?: string
 ): Promise<string> => {
-     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY!.trim() });
+     const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
      const prompts = {
         en: `You are an intelligent assistant for an artisan. Analyze the provided image and/or text description of a handcrafted product.
         Based SOLELY on the provided inputs, generate the following content:
@@ -130,7 +130,7 @@ export const transcribeAudio = async (
     mimeType: string,
     lang: 'en' | 'hi' | 'bn' | 'ta' | 'mr'
 ): Promise<string> => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY!.trim() });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     const prompts = {
         en: "Transcribe the following audio recording verbatim.",
         hi: "निम्नलिखित ऑडियो रिकॉर्डिंग को शब्दशः ट्रांसक्राइब करें।",
@@ -171,7 +171,7 @@ export const transcribeAndGenerateFromAudio = async (
     base64ImageData?: string,
     imageMimeType?: string
 ): Promise<string> => {
-     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY!.trim() });
+     const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
      const prompts = {
         en: `You are an intelligent assistant for an artisan.
         1. Transcribe the provided audio recording.
@@ -286,7 +286,7 @@ export const transcribeAndGenerateFromAudio = async (
 };
 
 export const generatePricingSuggestion = async (productInfo: string, lang: 'en' | 'hi' | 'bn' | 'ta' | 'mr'): Promise<GenerateContentResponse> => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY!.trim() });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     const prompts = {
         en: `Based on real-time web search data for similar products, suggest a price range and provide a brief reasoning. Product: ${productInfo}. Return the answer as a JSON object with keys "minPrice", "maxPrice", and "reasoning".`,
         hi: `समान उत्पादों के लिए रीयल-टाइम वेब खोज डेटा के आधार पर, एक मूल्य सीमा सुझाएं और एक संक्षिप्त तर्क प्रदान करें। उत्पाद: ${productInfo}। उत्तर को "minPrice", "maxPrice", और "reasoning" की के साथ JSON ऑब्जेक्ट के रूप में लौटाएं।`,
@@ -320,7 +320,7 @@ export const generatePricingSuggestion = async (productInfo: string, lang: 'en' 
 };
 
 export const generateSocialMediaPost = async (platform: string, prompt: string, lang: 'en' | 'hi' | 'bn' | 'ta' | 'mr'): Promise<string> => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY!.trim() });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     const prompts = {
         en: `Create a social media post for ${platform} to promote an artisan's product or collection. The post should be based on this description: "${prompt}". The tone should be engaging and authentic. Also, provide between 5 and 10 relevant and popular hashtags.`,
         hi: `${platform} के लिए एक कारीगर के उत्पाद या संग्रह को बढ़ावा देने के लिए एक सोशल मीडिया पोस्ट बनाएं। पोस्ट इस विवरण पर आधारित होनी चाहिए: "${prompt}"। लहजा आकर्षक और प्रामाणिक होना चाहिए। साथ ही, 5 से 10 प्रासंगिक और लोकप्रिय हैशटैग प्रदान करें।`,
@@ -373,7 +373,7 @@ export const generateCertificateText = async (
     skills: string[],
     lang: 'en' | 'hi' | 'bn' | 'ta' | 'mr'
 ): Promise<string> => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY!.trim() });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     const prompts = {
         en: `Generate a formal text for a "Certificate of Contribution".
     It should acknowledge the volunteer's work with a local artisan.
@@ -459,7 +459,7 @@ export const editImageWithAI = async (
     mimeType: string,
     prompt: string
 ): Promise<Part[]> => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY!.trim() });
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
     try {
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash-image',
