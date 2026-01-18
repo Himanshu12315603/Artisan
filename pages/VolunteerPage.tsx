@@ -21,17 +21,17 @@ const StarRating: React.FC<{ rating: number, setRating: (r: number) => void }> =
 
 
 const VolunteerPage: React.FC = () => {
-    const { 
-        t, 
+    const {
+        t,
         language,
-        currentUser, 
-        projects, 
-        volunteers, 
-        artisans, 
-        setSelectedPortfolioUser, 
-        sendConnectionRequest, 
-        connectionRequests, 
-        startChat, 
+        currentUser,
+        projects,
+        volunteers,
+        artisans,
+        setSelectedPortfolioUser,
+        sendConnectionRequest,
+        connectionRequests,
+        startChat,
         postNewProject,
         projectApplications,
         applyForProject,
@@ -40,11 +40,11 @@ const VolunteerPage: React.FC = () => {
         endCollaboration,
         issueCertificate
     } = useContext(AppContext)!;
-    
+
     // Determine initial tab based on role
     const initialTab = currentUser?.role === 'artisan' ? 'my-projects' : 'projects';
     const [activeTab, setActiveTab] = useState(initialTab);
-    
+
     // State for modals and confirmations
     const [showConfirmation, setShowConfirmation] = useState<string | null>(null);
     const [showConnectModal, setShowConnectModal] = useState<User | null>(null);
@@ -52,7 +52,7 @@ const VolunteerPage: React.FC = () => {
     const [viewingApplicantsFor, setViewingApplicantsFor] = useState<Project | null>(null);
     const [endingCollaboration, setEndingCollaboration] = useState<Collaboration | null>(null);
     const [viewingCertificate, setViewingCertificate] = useState<CompletedProject | null>(null);
-    
+
     // Form state
     const [newProjectData, setNewProjectData] = useState({ title: '', description: '', skills: '' });
     const [feedback, setFeedback] = useState('');
@@ -99,8 +99,15 @@ const VolunteerPage: React.FC = () => {
     const ConnectButton: React.FC<{ user: User }> = ({ user }) => {
         if (user.id === currentUser?.id) return null;
         const existingRequest = connectionRequests.find(req => (req.senderId === currentUser?.id && req.receiverId === user.id) || (req.senderId === user.id && req.receiverId === currentUser?.id));
-        if (existingRequest?.status === 'accepted') return <Button onClick={() => startChat(user)}>{t('profile.message')}</Button>;
-        if (existingRequest?.status === 'pending' && existingRequest.senderId === currentUser?.id) return <Button disabled>{t('profile.requestSent')}</Button>;
+
+        if (existingRequest?.status === 'accepted') {
+            return <Button onClick={() => startChat(user)}>{t('profile.message')}</Button>;
+        }
+
+        if (existingRequest?.status === 'pending' && existingRequest.senderId === currentUser?.id) {
+            return <Button disabled variant="secondary">{t('profile.requestSent')}</Button>;
+        }
+
         return <Button onClick={() => setShowConnectModal(user)}>{t('profile.connect')}</Button>;
     };
 
@@ -116,10 +123,10 @@ const VolunteerPage: React.FC = () => {
             <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-b-2xl mt-auto"><ConnectButton user={user} /></div>
         </Card>
     );
-    
-    const tabs = currentUser?.role === 'artisan' 
+
+    const tabs = currentUser?.role === 'artisan'
         ? [{ id: 'my-projects', label: "My Projects" }, { id: 'find', label: t('volunteer.tabs.find') }]
-        : [{ id: 'projects', label: t('volunteer.tabs.projects')}, {id: 'my-applications', label: "My Applications & Collaborations"}, { id: 'my-certifications', label: "My Certifications" }, { id: 'findArtisans', label: t('volunteer.tabs.findArtisans') }];
+        : [{ id: 'projects', label: t('volunteer.tabs.projects') }, { id: 'my-applications', label: "My Applications & Collaborations" }, { id: 'my-certifications', label: "My Certifications" }, { id: 'findArtisans', label: t('volunteer.tabs.findArtisans') }];
 
     return (
         <div className="space-y-8">
@@ -130,7 +137,7 @@ const VolunteerPage: React.FC = () => {
                 </div>
                 {currentUser?.role === 'artisan' && <Button onClick={() => setIsProjectModalOpen(true)}>{t('volunteer.projects.button')}</Button>}
             </div>
-            
+
             <div className="border-b border-slate-200 dark:border-slate-700">
                 <nav className="-mb-px flex space-x-6" aria-label="Tabs">
                     {tabs.map(tab => (
@@ -158,13 +165,13 @@ const VolunteerPage: React.FC = () => {
 
             {/* Modals & Confirmations */}
             {showConfirmation && <div className="fixed bottom-5 right-5 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg animate-fadeInUp">{showConfirmation}</div>}
-            
+
             {showConnectModal && <ConnectModal user={showConnectModal} onConfirm={handleSendRequest} onCancel={() => setShowConnectModal(null)} />}
             {isProjectModalOpen && <PostProjectModal onSubmit={handlePostProject} onCancel={() => setIsProjectModalOpen(false)} data={newProjectData} setData={setNewProjectData} />}
             {viewingApplicantsFor && <ApplicantsModal project={viewingApplicantsFor} onClose={() => setViewingApplicantsFor(null)} />}
             {endingCollaboration && <EndCollaborationModal collaboration={endingCollaboration} onSubmit={handleEndCollaboration} onCancel={() => setEndingCollaboration(null)} rating={rating} setRating={setRating} feedback={feedback} setFeedback={setFeedback} />}
             {viewingCertificate && (
-                <DigitalCertificate 
+                <DigitalCertificate
                     data={{
                         id: viewingCertificate.id,
                         artworkName: viewingCertificate.projectName,
@@ -196,7 +203,7 @@ const AvailableProjectsView = () => {
             <Card className="transition-all duration-300 hover:shadow-xl flex flex-col">
                 <CardContent className="flex-grow p-6">
                     <h4 className="font-bold text-lg mb-2">{project.title}</h4>
-                    {artisan && <div className="flex items-center text-xs text-slate-500 mb-2 cursor-pointer" onClick={() => setSelectedPortfolioUser(artisan)}><img src={artisan.avatar} className="w-5 h-5 rounded-full object-cover mr-2"/><span>{t('volunteer.postedBy')} {project.postedBy}</span></div>}
+                    {artisan && <div className="flex items-center text-xs text-slate-500 mb-2 cursor-pointer" onClick={() => setSelectedPortfolioUser(artisan)}><img src={artisan.avatar} className="w-5 h-5 rounded-full object-cover mr-2" /><span>{t('volunteer.postedBy')} {project.postedBy}</span></div>}
                     <p className="text-sm text-slate-600 dark:text-slate-300 mb-4 h-20 overflow-hidden">{project.description}</p>
                     <div><p className="text-xs font-semibold mb-2">{t('volunteer.skillsNeeded')}</p><div className="flex flex-wrap gap-2">{project.skillsNeeded.map(skill => (<span key={skill} className="bg-teal-100 text-teal-800 text-xs font-semibold px-3 py-1 rounded-full">{skill}</span>))}</div></div>
                 </CardContent>
@@ -214,7 +221,7 @@ const AvailableProjectsView = () => {
 
 const MyApplicationsView = () => {
     const { projectApplications, projects, collaborations } = useContext(AppContext)!;
-    
+
     const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
         const styles: { [key: string]: string } = { accepted: 'bg-green-100 text-green-800', pending: 'bg-amber-100 text-amber-800', declined: 'bg-red-100 text-red-800' };
         return <span className={`px-3 py-1 text-xs font-semibold rounded-full ${styles[status]}`}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>;
@@ -224,18 +231,18 @@ const MyApplicationsView = () => {
         <Card>
             <CardContent>
                 <div className="space-y-4">
-                     <h3 className="text-xl font-bold">Active Collaborations</h3>
-                     {collaborations.filter(c => c.status === 'in-progress').length > 0 ? collaborations.filter(c => c.status === 'in-progress').map(c => {
-                         const project = projects.find(p => p.id === c.projectId);
-                         return (
+                    <h3 className="text-xl font-bold">Active Collaborations</h3>
+                    {collaborations.filter(c => c.status === 'in-progress').length > 0 ? collaborations.filter(c => c.status === 'in-progress').map(c => {
+                        const project = projects.find(p => p.id === c.projectId);
+                        return (
                             <div key={c.id} className="p-4 bg-teal-50 dark:bg-teal-900/50 rounded-lg flex justify-between items-center">
                                 <div>
                                     <p className="font-bold">{project?.title}</p>
                                     <p className="text-sm text-slate-500">Status: In Progress with {project?.postedBy}</p>
                                 </div>
                             </div>
-                         );
-                     }) : <p className="text-slate-500 text-sm">You have no active collaborations.</p>}
+                        );
+                    }) : <p className="text-slate-500 text-sm">You have no active collaborations.</p>}
                 </div>
                 <div className="space-y-4 mt-6">
                     <h3 className="text-xl font-bold">Past Applications</h3>
@@ -291,10 +298,10 @@ const MyCertificationsView: React.FC<{ onViewCertificate: (p: CompletedProject) 
 const MyProjectsView: React.FC<{ setViewingApplicantsFor: (p: Project) => void, setEndingCollaboration: (c: Collaboration) => void }> = ({ setViewingApplicantsFor, setEndingCollaboration }) => {
     const { currentUser, projects, artisans, collaborations, projectApplications, volunteers, issueCertificate } = useContext(AppContext)!;
     const myProjects = projects.filter(p => artisans.find(a => a.name === p.postedBy)?.id === currentUser?.id);
-    
+
     const myProjectIds = myProjects.map(p => p.id);
     const myCollabs = collaborations.filter(c => myProjectIds.includes(c.projectId));
-    
+
     const openProjects = myProjects.filter(p => p.status === 'Open');
     const inProgressCollabs = myCollabs.filter(c => c.status === 'in-progress');
     const completedCollabs = myCollabs.filter(c => c.status === 'completed');
@@ -322,11 +329,11 @@ const MyProjectsView: React.FC<{ setViewingApplicantsFor: (p: Project) => void, 
             </Card>
         );
     };
-    
+
     const CompletedCollaborationCard: React.FC<{ collab: Collaboration }> = ({ collab }) => {
         const project = projects.find(p => p.id === collab.projectId);
         const volunteer = volunteers.find(v => v.id === collab.volunteerId);
-        
+
         const isCertificateIssued = volunteer?.completedProjects?.some(p => p.id === collab.id);
 
         return (
@@ -336,7 +343,7 @@ const MyProjectsView: React.FC<{ setViewingApplicantsFor: (p: Project) => void, 
                         <p className="font-bold">{project?.title}</p>
                         <p className="text-sm text-slate-500">Completed with {volunteer?.name}</p>
                     </div>
-                    <Button 
+                    <Button
                         onClick={() => issueCertificate(collab)}
                         disabled={isCertificateIssued}
                         variant={isCertificateIssued ? "secondary" : "primary"}
@@ -362,7 +369,7 @@ const MyProjectsView: React.FC<{ setViewingApplicantsFor: (p: Project) => void, 
                     {inProgressCollabs.length > 0 ? inProgressCollabs.map(c => <CollaborationCard key={c.id} collab={c} />) : <p className="text-slate-500">You have no projects in progress.</p>}
                 </div>
             </section>
-             <section>
+            <section>
                 <h3 className="text-2xl font-bold mb-4">Completed</h3>
                 <div className="space-y-4">
                     {completedCollabs.length > 0 ? completedCollabs.map(c => <CompletedCollaborationCard key={c.id} collab={c} />) : <p className="text-slate-500">You have no completed projects.</p>}
@@ -384,7 +391,7 @@ const PostProjectModal: React.FC<{ onSubmit: (e: React.FormEvent) => void, onCan
     const { t } = useLocalization();
     return (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <Card className="w-full max-w-lg"><CardHeader><CardTitle>{t('volunteer.modal.title')}</CardTitle><p className="text-slate-500 mt-1">{t('volunteer.modal.description')}</p></CardHeader><CardContent><form onSubmit={onSubmit} className="space-y-4"><div><label htmlFor="proj-title" className="font-semibold block mb-1.5">{t('volunteer.modal.projectTitle')}</label><input type="text" id="proj-title" value={data.title} onChange={(e) => setData({ ...data, title: e.target.value })} placeholder={t('volunteer.modal.projectTitlePlaceholder')} required className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"/></div><div><label htmlFor="proj-desc" className="font-semibold block mb-1.5">{t('volunteer.modal.projectDescription')}</label><textarea id="proj-desc" value={data.description} onChange={(e) => setData({ ...data, description: e.target.value })} placeholder={t('volunteer.modal.projectDescriptionPlaceholder')} required className="w-full p-2 border rounded h-24 dark:bg-slate-700 dark:border-slate-600"/></div><div><label htmlFor="proj-skills" className="font-semibold block mb-1.5">{t('volunteer.modal.skillsNeeded')}</label><input type="text" id="proj-skills" value={data.skills} onChange={(e) => setData({ ...data, skills: e.target.value })} placeholder={t('volunteer.modal.skillsNeededPlaceholder')} required className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600"/></div><div className="flex justify-end gap-3 pt-4"><Button type="button" variant="secondary" onClick={onCancel}>{t('common.cancel')}</Button><Button type="submit">{t('volunteer.modal.postProject')}</Button></div></form></CardContent></Card>
+            <Card className="w-full max-w-lg"><CardHeader><CardTitle>{t('volunteer.modal.title')}</CardTitle><p className="text-slate-500 mt-1">{t('volunteer.modal.description')}</p></CardHeader><CardContent><form onSubmit={onSubmit} className="space-y-4"><div><label htmlFor="proj-title" className="font-semibold block mb-1.5">{t('volunteer.modal.projectTitle')}</label><input type="text" id="proj-title" value={data.title} onChange={(e) => setData({ ...data, title: e.target.value })} placeholder={t('volunteer.modal.projectTitlePlaceholder')} required className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600" /></div><div><label htmlFor="proj-desc" className="font-semibold block mb-1.5">{t('volunteer.modal.projectDescription')}</label><textarea id="proj-desc" value={data.description} onChange={(e) => setData({ ...data, description: e.target.value })} placeholder={t('volunteer.modal.projectDescriptionPlaceholder')} required className="w-full p-2 border rounded h-24 dark:bg-slate-700 dark:border-slate-600" /></div><div><label htmlFor="proj-skills" className="font-semibold block mb-1.5">{t('volunteer.modal.skillsNeeded')}</label><input type="text" id="proj-skills" value={data.skills} onChange={(e) => setData({ ...data, skills: e.target.value })} placeholder={t('volunteer.modal.skillsNeededPlaceholder')} required className="w-full p-2 border rounded dark:bg-slate-700 dark:border-slate-600" /></div><div className="flex justify-end gap-3 pt-4"><Button type="button" variant="secondary" onClick={onCancel}>{t('common.cancel')}</Button><Button type="submit">{t('volunteer.modal.postProject')}</Button></div></form></CardContent></Card>
         </div>
     );
 };
@@ -400,7 +407,7 @@ const ApplicantsModal: React.FC<{ project: Project, onClose: () => void }> = ({ 
                 return (<div key={app.id} className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg flex items-center gap-4">
                     <img src={volunteer.avatar} alt={volunteer.name} className="w-12 h-12 rounded-full object-cover" />
                     <div className="flex-1"><p className="font-bold">{volunteer.name}</p><p className="text-sm text-slate-500">{volunteer.skills.join(', ')}</p></div>
-                    <Button variant="ghost" onClick={() => { onClose(); setSelectedPortfolioUser(volunteer)}}>Profile</Button>
+                    <Button variant="ghost" onClick={() => { onClose(); setSelectedPortfolioUser(volunteer) }}>Profile</Button>
                     <div className="flex gap-2"><Button variant="primary" onClick={() => respondToApplication(app, 'accepted')}>Accept</Button><Button variant="secondary" onClick={() => respondToApplication(app, 'declined')}>Decline</Button></div>
                 </div>)
             }) : <p className="text-slate-500 text-center py-4">No pending applicants for this project.</p>}</CardContent><div className="p-4 border-t dark:border-slate-700 flex justify-end"><Button variant="secondary" onClick={onClose}>Close</Button></div></Card>
@@ -414,7 +421,7 @@ const EndCollaborationModal: React.FC<{ collaboration: Collaboration, onSubmit: 
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <Card className="w-full max-w-lg"><CardHeader><CardTitle>End Collaboration with {volunteer?.name}</CardTitle></CardHeader><CardContent><form onSubmit={onSubmit} className="space-y-4">
                 <div><label className="font-semibold block mb-1.5 text-center">Rate Your Experience</label><StarRating rating={rating} setRating={setRating} /></div>
-                <div><label htmlFor="feedback" className="font-semibold block mb-1.5">Provide Feedback (optional)</label><textarea id="feedback" value={feedback} onChange={e => setFeedback(e.target.value)} placeholder="This will be added as a testimonial on the volunteer's profile." className="w-full p-2 border rounded h-24 dark:bg-slate-700 dark:border-slate-600"/></div>
+                <div><label htmlFor="feedback" className="font-semibold block mb-1.5">Provide Feedback (optional)</label><textarea id="feedback" value={feedback} onChange={e => setFeedback(e.target.value)} placeholder="This will be added as a testimonial on the volunteer's profile." className="w-full p-2 border rounded h-24 dark:bg-slate-700 dark:border-slate-600" /></div>
                 <p className="text-xs text-slate-500">Submitting this form will complete the project and allow you to issue a certificate from the 'Completed' section.</p>
                 <div className="flex justify-end gap-3 pt-4"><Button type="button" variant="secondary" onClick={onCancel}>Cancel</Button><Button type="submit">Submit & End Collaboration</Button></div>
             </form></CardContent></Card>
