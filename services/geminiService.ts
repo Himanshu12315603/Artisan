@@ -15,7 +15,7 @@ export const generateText = async (prompt: string): Promise<string> => {
             throw new Error("QUOTA_EXCEEDED");
         }
         if (errorMessage.includes('API key not valid') || errorMessage.includes('not found')) {
-             throw new Error("API key not valid. Please pass a valid API key.");
+            throw new Error("API key not valid. Please pass a valid API key.");
         }
         return "Sorry, I couldn't generate a response right now. Please check the console for errors.";
     }
@@ -38,8 +38,8 @@ export const generateProductDetailsFromInput = async (
     mimeType?: string,
     textInput?: string
 ): Promise<string> => {
-     const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
-     const prompts = {
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+    const prompts = {
         en: `You are an intelligent assistant for an artisan. Analyze the provided image and/or text description of a handcrafted product.
         Based SOLELY on the provided inputs, generate the following content:
            - A short, catchy product name.
@@ -69,7 +69,7 @@ export const generateProductDetailsFromInput = async (
     if (base64ImageData && mimeType) {
         parts.push({ inlineData: { data: base64ImageData, mimeType: mimeType } });
     }
-     if (textInput) {
+    if (textInput) {
         parts.push({ text: `User text description: "${textInput}"` });
     }
     parts.push({ text: prompts[lang] });
@@ -93,7 +93,7 @@ export const generateProductDetailsFromInput = async (
                                 maxPrice: { type: Type.NUMBER },
                                 reasoning: { type: Type.STRING }
                             },
-                             propertyOrdering: ["minPrice", "maxPrice", "reasoning"]
+                            propertyOrdering: ["minPrice", "maxPrice", "reasoning"]
                         },
                         socialMediaPost: {
                             type: Type.OBJECT,
@@ -119,7 +119,7 @@ export const generateProductDetailsFromInput = async (
             throw new Error("QUOTA_EXCEEDED");
         }
         if (errorMessage.includes('API key not valid') || errorMessage.includes('not found')) {
-             throw new Error("API key not valid. Please pass a valid API key.");
+            throw new Error("API key not valid. Please pass a valid API key.");
         }
         return JSON.stringify({ error: "Could not process input. Please try again." });
     }
@@ -157,7 +157,7 @@ export const transcribeAudio = async (
             throw new Error("QUOTA_EXCEEDED");
         }
         if (errorMessage.includes('API key not valid') || errorMessage.includes('not found')) {
-             throw new Error("API key not valid. Please pass a valid API key.");
+            throw new Error("API key not valid. Please pass a valid API key.");
         }
         throw new Error("Sorry, I couldn't transcribe the audio right now.");
     }
@@ -171,8 +171,8 @@ export const transcribeAndGenerateFromAudio = async (
     base64ImageData?: string,
     imageMimeType?: string
 ): Promise<string> => {
-     const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
-     const prompts = {
+    const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
+    const prompts = {
         en: `You are an intelligent assistant for an artisan.
         1. Transcribe the provided audio recording.
         2. Based on the transcription and the provided image, identify the product being described.
@@ -253,7 +253,7 @@ export const transcribeAndGenerateFromAudio = async (
                                 maxPrice: { type: Type.NUMBER },
                                 reasoning: { type: Type.STRING }
                             },
-                             propertyOrdering: ["minPrice", "maxPrice", "reasoning"]
+                            propertyOrdering: ["minPrice", "maxPrice", "reasoning"]
                         },
                         socialMediaPost: {
                             type: Type.OBJECT,
@@ -279,7 +279,7 @@ export const transcribeAndGenerateFromAudio = async (
             throw new Error("QUOTA_EXCEEDED");
         }
         if (errorMessage.includes('API key not valid') || errorMessage.includes('not found')) {
-             throw new Error("API key not valid. Please pass a valid API key.");
+            throw new Error("API key not valid. Please pass a valid API key.");
         }
         return JSON.stringify({ error: "Could not process audio. Please try again." });
     }
@@ -296,13 +296,13 @@ export const generatePricingSuggestion = async (productInfo: string, lang: 'en' 
     };
     const prompt = prompts[lang];
 
-     try {
+    try {
         const response = await ai.models.generateContent({
-           model: "gemini-2.5-flash",
-           contents: prompt,
-           config: {
-             tools: [{googleSearch: {}}],
-           },
+            model: "gemini-2.5-flash",
+            contents: prompt,
+            config: {
+                tools: [{ googleSearch: {} }],
+            },
         });
         return response;
     } catch (error: any) {
@@ -312,7 +312,7 @@ export const generatePricingSuggestion = async (productInfo: string, lang: 'en' 
             throw new Error("QUOTA_EXCEEDED");
         }
         if (errorMessage.includes('API key not valid') || errorMessage.includes('not found')) {
-             throw new Error("API key not valid. Please pass a valid API key.");
+            throw new Error("API key not valid. Please pass a valid API key.");
         }
         // We can't return a full response object on error easily, so we craft text that can be parsed as a JSON error.
         throw new Error(JSON.stringify({ error: "Could not generate pricing suggestion. Please try again." }));
@@ -358,7 +358,7 @@ export const generateSocialMediaPost = async (platform: string, prompt: string, 
             throw new Error("QUOTA_EXCEEDED");
         }
         if (errorMessage.includes('API key not valid') || errorMessage.includes('not found')) {
-             throw new Error("API key not valid. Please pass a valid API key.");
+            throw new Error("API key not valid. Please pass a valid API key.");
         }
         return JSON.stringify({ error: "Could not generate social media post. Please try again." });
     }
@@ -387,10 +387,10 @@ export const generateCertificateText = async (
 
     The tone should be professional, appreciative, and highlight the value of the contribution to the artisan's business and cultural preservation.
     Start with a clear heading like "Certificate of Contribution".
-    Mention the artisan's name/business (Artisan Ally platform) as the issuer.
+    Mention the artisan's name/business (Apna Udyog platform) as the issuer.
     Conclude with a line for the date of issue.
     `,
-    hi: `एक "योगदान प्रमाण पत्र" के लिए एक औपचारिक पाठ उत्पन्न करें।
+        hi: `एक "योगदान प्रमाण पत्र" के लिए एक औपचारिक पाठ उत्पन्न करें।
     इसे एक स्थानीय कारीगर के साथ स्वयंसेवक के काम को स्वीकार करना चाहिए।
     
     विवरण:
@@ -405,7 +405,7 @@ export const generateCertificateText = async (
     जारीकर्ता के रूप में कारीगर का नाम/व्यवसाय (आर्टिसन एली प्लेटफॉर्म) का उल्लेख करें।
     जारी करने की तारीख के लिए एक पंक्ति के साथ समाप्त करें।
     `,
-    bn: `একটি "অবদান শংসাপত্র"-এর জন্য একটি আনুষ্ঠানিক পাঠ্য তৈরি করুন।
+        bn: `একটি "অবদান শংসাপত্র"-এর জন্য একটি আনুষ্ঠানিক পাঠ্য তৈরি করুন।
     এটি একজন স্থানীয় কারিগরের সাথে স্বেচ্ছাসেবীর কাজকে স্বীকার করা উচিত।
     
     বিস্তারিত:
@@ -420,7 +420,7 @@ export const generateCertificateText = async (
     ইস্যুকারী হিসাবে কারিগরের নাম/ব্যবসা (আর্টিসান অ্যালাই প্ল্যাটফর্ম) উল্লেখ করুন।
     ইস্যু করার তারিখের জন্য একটি লাইন দিয়ে শেষ করুন।
     `,
-    ta: `ஒரு "பங்களிப்புச் சான்றிதழ்"-க்கான முறையான உரையை உருவாக்கவும்।
+        ta: `ஒரு "பங்களிப்புச் சான்றிதழ்"-க்கான முறையான உரையை உருவாக்கவும்।
     இது ஒரு உள்ளூர் கைவினைஞருடன் தன்னார்வலரின் பணியை அங்கீகரிக்க வேண்டும்।
     
     விவரங்கள்:
@@ -435,7 +435,7 @@ export const generateCertificateText = async (
     வழங்குபவராக கைவினைஞரின் பெயர்/வணிகத்தை (கைவினைஞர் கூட்டாளி தளம்) குறிப்பிடவும்।
     வழங்கப்பட்ட தேதிக்கான ஒரு வரியுடன் முடிக்கவும்।
     `,
-    mr: `एका "योगदान प्रमाणपत्रासाठी" औपचारिक मजकूर तयार करा.
+        mr: `एका "योगदान प्रमाणपत्रासाठी" औपचारिक मजकूर तयार करा.
     त्यात स्थानिक कारागिरासोबत स्वयंसेवकाच्या कामाची दखल घेतली पाहिजे.
     
     तपशील:
@@ -504,7 +504,7 @@ export const generateVideoFromStory = async (story: string, lang: 'en' | 'hi' | 
         ta: `இந்தக் கதையின் அடிப்படையில் ஒரு குறுகிய, பார்வைக்கு ஈர்க்கக்கூடிய விளம்பர வீடியோவை உருவாக்கவும்: "${story}"`,
         mr: `या कथेवर आधारित एक लहान, दृष्यदृष्ट्या आकर्षक जाहिरात व्हिडिओ तयार करा: "${story}"`,
     };
-    
+
     try {
         let operation = await ai.models.generateVideos({
             model: 'veo-3.1-fast-generate-preview',
@@ -517,10 +517,10 @@ export const generateVideoFromStory = async (story: string, lang: 'en' | 'hi' | 
         });
         return operation;
     } catch (error: any) {
-         console.error("Error starting video generation:", error);
-         const errorMessage = String(error.message || error);
+        console.error("Error starting video generation:", error);
+        const errorMessage = String(error.message || error);
         if (errorMessage.includes('API key') || errorMessage.includes('not found') || errorMessage.includes('permission') || errorMessage.includes('Requested entity was not found')) {
-             throw new Error("API_KEY_ERROR");
+            throw new Error("API_KEY_ERROR");
         }
         throw new Error("Could not start video generation process.");
     }
@@ -540,7 +540,7 @@ export const getVideoGenerationStatus = async (operation: Operation<GenerateVide
         console.error("Error polling video status:", error);
         const errorMessage = String(error.message || error);
         if (errorMessage.includes('API key') || errorMessage.includes('not found') || errorMessage.includes('Requested entity was not found')) {
-             throw new Error("API_KEY_ERROR");
+            throw new Error("API_KEY_ERROR");
         }
         throw new Error("Could not get video generation status.");
     }
@@ -568,10 +568,10 @@ export const downloadVideo = async (downloadLink: string): Promise<string> => {
             } catch (e) {
                 console.error("Failed to parse error body.");
             }
-            
+
             // Treat 400 as a configuration error to guide the user.
             if (response.status === 400) {
-                 throw new Error("API_KEY_ERROR");
+                throw new Error("API_KEY_ERROR");
             }
             throw new Error(`Failed to download video. Server responded with status: ${response.status}.`);
         }
@@ -584,6 +584,5 @@ export const downloadVideo = async (downloadLink: string): Promise<string> => {
             throw error;
         }
         // "Failed to fetch" is a generic browser error. We can give a better hint now.
-        throw new Error("Failed to fetch video. This may be due to a network issue, CORS policy, or an invalid API key. Please check the browser's network console for more details, including the logged API error body.");
-    }
+        throw new Error("Failed to fetch video. This may be due to a network issue, CORS policy, or an invalid API key. Please check the browser's network console for more details, including the logged API error body."); }
 };
